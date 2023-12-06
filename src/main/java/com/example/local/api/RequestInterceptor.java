@@ -1,27 +1,29 @@
 package com.example.local.api;
 
+import com.example.local.context.UserContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-public class MyInterceptor implements HandlerInterceptor {
+@RequiredArgsConstructor
+public class RequestInterceptor implements HandlerInterceptor {
+
+    private final UserContext userContext;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // Здесь можно выполнить любую предварительную обработку запроса
-        System.out.println("thread: " + Thread.currentThread().threadId());
-        System.out.println("Перехватчик перехватил запрос до контроллера");
-        return true; // Если возвращается false, выполнение контроллера прерывается
+        userContext.setLang(request.getHeader(HttpHeaders.ACCEPT_LANGUAGE));
+        return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-        // Здесь можно выполнить дополнительную обработку после вызова метода контроллера
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        // Здесь можно выполнить обработку после завершения запроса
     }
 }
